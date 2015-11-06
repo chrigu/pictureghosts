@@ -1,0 +1,22 @@
+{
+  "name": "pictureghosts",
+  "version": "0.0.1",
+  "description": "Create a picture from your picture history",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "picture",
+    "image"
+  ],
+  "author": "Christian Cueni",
+  "license": "ISC",
+  "dependencies": {
+    "exif": "^0.4.0",
+    "jimp": "^0.2.13",
+    "moment": "^2.10.6",
+    "optimist": "^0.6.1",
+    "promise": "^7.0.4"
+  }
+}
