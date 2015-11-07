@@ -5,17 +5,21 @@ var Jimp = require("jimp")
     Promise = require("promise"),
     moment = require('moment');
 
+//general settings
 var path = argv._[0],
-    height = 600;
+    height = 600,
+    dateFormat = "YYYY:MM:DD HH:mm:ss";
 
 //reads the image's pixels and return the average rgb value
 function readPixels(imagePath) {
     return Jimp.read(imagePath).then(function (image) {
 
-        var buffer = image.bitmap.data;
-        var pixels = buffer.length/4;
+        var buffer,
+            pixels,
+            rgbSum = [0,0,0];
 
-        var rgbSum = [0,0,0];
+        buffer = image.bitmap.data;
+        pixels = buffer.length/4;
 
         for (var i = 0;i < buffer.length;i+=4) {
             rgbSum[0] += buffer[i];
@@ -45,9 +49,9 @@ function readExif(imagePath) {
                 }
                 else {
                     if (exifData.exif.CreateDate) {
-                        return resolve(moment(exifData.exif.CreateDate, "YYYY:MM:DD HH:mm:ss"));
+                        return resolve(moment(exifData.exif.CreateDate, dateFormat));
                     } else if (exifData.exif.DateTimeOriginal) {
-                        return resolve(moment(exifData.exif.CreateDate, "YYYY:MM:DD HH:mm:ss"));
+                        return resolve(moment(exifData.exif.DateTimeOriginal, dateFormat));
                     } else { return resolve(null) }
                 }
             });
@@ -69,10 +73,7 @@ function getImages(files) {
 
                 var filePath = path + "/" + files[i];
 
-                var promise1 = readPixels(filePath);
-                var promies2 = readExif(filePath);
-
-                Promise.all([promise1, promies2]).then(function (values) {
+                Promise.all([readPixels(filePath), readExif(filePath)]).then(function (values) {
                     console.log(filePath);
                     resolve({
                         file: filePath,
